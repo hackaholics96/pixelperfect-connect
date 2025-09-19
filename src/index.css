@@ -8,33 +8,44 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* CropDoc Design System - Agricultural Theme */
+    --primary: 134 61% 41%;        /* Green #4CAF50 */
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 134 41% 88%;      /* Light green */
+    --secondary-foreground: 134 61% 20%;
+
+    --success: 134 61% 41%;        /* Green success */
+    --success-foreground: 0 0% 98%;
+
+    --warning: 45 93% 47%;         /* Warning yellow */
+    --warning-foreground: 0 0% 0%;
+
+    --destructive: 0 84% 60%;      /* Error red #e53e3e */
+    --destructive-foreground: 0 0% 98%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 134 41% 94%;         /* Very light green accent */
+    --accent-foreground: 134 61% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 13% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 13% 18%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 134 61% 41%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* CropDoc specific tokens */
+    --farm-background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9));
+    --farm-image: url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --background: 0 0% 100%;
+    --foreground: 220 13% 18%;
 
     --radius: 0.5rem;
 
@@ -56,33 +67,39 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --primary: 134 61% 41%;
+    --primary-foreground: 0 0% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --secondary: 134 20% 25%;
+    --secondary-foreground: 0 0% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --success: 134 61% 41%;
+    --success-foreground: 0 0% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --warning: 45 93% 60%;
+    --warning-foreground: 0 0% 0%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --card: 222 84% 5%;
+    --card-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --popover: 222 84% 5%;
+    --popover-foreground: 210 40% 98%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 134 61% 41%;
+
+    --background: 222 84% 5%;
+    --foreground: 210 40% 98%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -101,5 +118,68 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Poppins', -apple-system, sans-serif;
+  }
+
+  /* CropDoc specific styles */
+  .farm-background {
+    background: var(--farm-background), var(--farm-image);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  .cropdoc-card {
+    @apply bg-card rounded-2xl shadow-lg border border-border;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  .language-card {
+    @apply bg-card rounded-xl p-5 border-2 border-transparent hover:border-primary shadow-md cursor-pointer transition-all duration-300;
+  }
+
+  .language-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .pagebar {
+    @apply bg-card rounded-2xl shadow-lg border border-border p-4 flex justify-between items-center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .back-btn {
+    @apply bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300;
+    box-shadow: 0 4px 8px hsl(var(--primary) / 0.3);
+  }
+
+  .back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px hsl(var(--primary) / 0.4);
+  }
+
+  .sos-btn {
+    @apply bg-destructive text-destructive-foreground rounded-full w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-300;
+    box-shadow: 0 4px 8px hsl(var(--destructive) / 0.3);
+  }
+
+  .sos-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px hsl(var(--destructive) / 0.4);
+  }
+
+  .otp-input {
+    @apply w-14 h-14 text-center text-2xl font-semibold border-2 rounded-xl transition-all duration-300;
+  }
+
+  .otp-input:focus {
+    @apply border-primary outline-none;
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.3);
+  }
+
+  .otp-input.filled {
+    @apply border-primary;
+    background-color: hsl(var(--accent));
   }
 }
