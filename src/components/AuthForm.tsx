@@ -117,22 +117,26 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
     setLoading(true);
 
     try {
-      // Create user record in database
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .insert({
-          name: formData.name.trim(),
-          phone: formData.phone.trim(),
-          phone_verified: false,
-          language_code: selectedLanguage.code,
-          state_code: formData.state,
-          phone_country_code: '+91' // Default to India
-        })
-        .select()
-        .single();
+      // Use phone as email for Supabase auth (since we only collect phone)
+      const email = `${formData.phone.replace(/[^\d]/g, '')}@cropdoc.app`;
+      const password = `temp_${formData.phone.replace(/[^\d]/g, '')}_${Date.now()}`;
 
-      if (userError) {
-        if (userError.code === '23505') { // Unique constraint violation
+      // Sign up with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: formData.name.trim(),
+            phone: formData.phone.trim(),
+            language: selectedLanguage.code,
+            state_code: formData.state
+          }
+        }
+      });
+
+      if (authError) {
+        if (authError.message.includes('already registered')) {
           toast({
             title: "User Already Exists",
             description: "A user with this phone number already exists. Please use a different number.",
@@ -140,28 +144,40 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
           });
           return;
         }
-        throw userError;
+        throw authError;
       }
 
-      // Log auth event
-      await supabase
-        .from('auth_events')
-        .insert({
-          user_id: userData.id,
-          phone: formData.phone.trim(),
-          event_type: 'user_registration',
-          details: {
-            language: selectedLanguage.code,
-            state: formData.state
-          }
-        });
+      if (!authData.user) {
+        throw new Error('Failed to create user');
+      }
+
+      // Wait a moment for the trigger to create the user record
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Get the created user data
+      const { data: userData, error: userFetchError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', authData.user.id)
+        .single();
+
+      if (userFetchError) {
+        console.error('Error fetching user data:', userFetchError);
+        // Still continue with auth data if we can't fetch user record
+      }
 
       toast({
         title: "Registration Successful",
         description: "Your account has been created successfully!",
       });
 
-      onAuthComplete(userData);
+      onAuthComplete(userData || {
+        id: authData.user.id,
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        language_code: selectedLanguage.code,
+        state_code: formData.state
+      });
 
     } catch (error: any) {
       console.error('Error during registration:', error);
