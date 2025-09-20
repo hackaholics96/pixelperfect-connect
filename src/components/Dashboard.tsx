@@ -15,6 +15,7 @@ import {
   LogOut,
   X
 } from "lucide-react";
+import { getTranslation, formatMessage } from "@/utils/translations";
 
 interface User {
   id: string;
@@ -39,6 +40,9 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
     pendingAlerts: 0
   });
   const { toast } = useToast();
+
+  // Translation helper
+  const t = (key: string) => getTranslation(user.language_code, key);
 
   useEffect(() => {
     fetchDashboardStats();
@@ -77,13 +81,13 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
   };
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home, page: 'dashboard' },
-    { id: 'crop-recommendation', label: 'Crop Recommendation', icon: Sprout, page: 'crop-recommendation' },
-    { id: 'fertilizer', label: 'Fertilizer Recommendation', icon: Beaker, page: 'fertilizer' },
-    { id: 'pesticide', label: 'Pesticide Alerts', icon: Shield, page: 'pesticide' },
-    { id: 'market-price', label: 'Market Prices', icon: TrendingUp, page: 'market-price' },
-    { id: 'alerts', label: 'Weather Alerts', icon: Bell, page: 'alerts' },
-    { id: 'settings', label: 'Settings', icon: Settings, page: 'settings' }
+    { id: 'dashboard', label: t('dashboard.menu.dashboard'), icon: Home, page: 'dashboard' },
+    { id: 'crop-recommendation', label: t('dashboard.menu.cropRecommendation'), icon: Sprout, page: 'crop-recommendation' },
+    { id: 'fertilizer', label: t('dashboard.menu.fertilizerRecommendation'), icon: Beaker, page: 'fertilizer' },
+    { id: 'pesticide', label: t('dashboard.menu.pesticideAlerts'), icon: Shield, page: 'pesticide' },
+    { id: 'market-price', label: t('dashboard.menu.marketPrices'), icon: TrendingUp, page: 'market-price' },
+    { id: 'alerts', label: t('dashboard.menu.weatherAlerts'), icon: Bell, page: 'alerts' },
+    { id: 'settings', label: t('dashboard.menu.settings'), icon: Settings, page: 'settings' }
   ];
 
   const handleMenuClick = (page: string) => {
@@ -176,7 +180,7 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
                 onClick={onLogout}
               >
                 <LogOut className="w-4 h-4 mr-3" />
-                Logout
+                {t('dashboard.menu.logout')}
               </Button>
             </div>
           </div>
@@ -188,10 +192,10 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
             {/* Welcome Section */}
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Welcome back, {user.name}!
+                {formatMessage(t('dashboard.welcomeBack'), { name: user.name })}
               </h1>
               <p className="text-muted-foreground">
-                Here's an overview of your farming activities
+                {t('dashboard.overviewText')}
               </p>
             </div>
 
@@ -200,7 +204,7 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
               <div className="cropdoc-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total Farms</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t('dashboard.stats.totalFarms')}</p>
                     <p className="text-3xl font-bold text-foreground">{stats.totalFarms}</p>
                   </div>
                   <Home className="w-8 h-8 text-primary" />
@@ -210,7 +214,7 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
               <div className="cropdoc-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Active Crops</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t('dashboard.stats.activeCrops')}</p>
                     <p className="text-3xl font-bold text-foreground">{stats.totalCrops}</p>
                   </div>
                   <Sprout className="w-8 h-8 text-primary" />
@@ -220,7 +224,7 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
               <div className="cropdoc-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Recommendations</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t('dashboard.stats.recommendations')}</p>
                     <p className="text-3xl font-bold text-foreground">{stats.totalRecommendations}</p>
                   </div>
                   <Beaker className="w-8 h-8 text-primary" />
@@ -230,7 +234,7 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
               <div className="cropdoc-card p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Alerts</p>
+                    <p className="text-sm font-medium text-muted-foreground">{t('dashboard.stats.alerts')}</p>
                     <p className="text-3xl font-bold text-destructive">{stats.pendingAlerts}</p>
                   </div>
                   <AlertTriangle className="w-8 h-8 text-destructive" />
@@ -240,14 +244,14 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
 
             {/* Quick Actions */}
             <div className="cropdoc-card p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-4">Quick Actions</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-4">{t('dashboard.quickActions')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Button
                   onClick={() => handleMenuClick('crop-recommendation')}
                   className="h-20 bg-primary hover:bg-primary/90 text-primary-foreground flex-col"
                 >
                   <Sprout className="w-6 h-6 mb-2" />
-                  Get Crop Recommendation
+                  {t('dashboard.actions.getCropRecommendation')}
                 </Button>
 
                 <Button
@@ -256,7 +260,7 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
                   variant="secondary"
                 >
                   <Beaker className="w-6 h-6 mb-2" />
-                  Fertilizer Guide
+                  {t('dashboard.actions.fertilizerGuide')}
                 </Button>
 
                 <Button
@@ -265,7 +269,7 @@ const Dashboard = ({ user, onLogout, onNavigate }: DashboardProps) => {
                   variant="outline"
                 >
                   <TrendingUp className="w-6 h-6 mb-2" />
-                  Check Market Prices
+                  {t('dashboard.actions.checkMarketPrices')}
                 </Button>
               </div>
             </div>

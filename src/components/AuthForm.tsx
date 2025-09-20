@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Check } from "lucide-react";
+import { getTranslation, formatMessage } from "@/utils/translations";
 
 interface Language {
   code: string;
@@ -35,6 +36,9 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
   const [loadingStates, setLoadingStates] = useState(true);
   const { toast } = useToast();
 
+  // Translation helper
+  const t = (key: string) => getTranslation(selectedLanguage.code, key);
+
   useEffect(() => {
     fetchStates();
   }, []);
@@ -51,8 +55,8 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
     } catch (error) {
       console.error('Error fetching states:', error);
       toast({
-        title: "Error",
-        description: "Failed to load states. Please refresh the page.",
+        title: t('common.error'),
+        description: t('auth.errors.statesLoadFailed'),
         variant: "destructive"
       });
     } finally {
@@ -70,8 +74,8 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
   const validateForm = () => {
     if (!formData.name.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Please enter your full name",
+        title: t('common.error'),
+        description: t('auth.validationErrors.nameRequired'),
         variant: "destructive"
       });
       return false;
@@ -79,8 +83,8 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
 
     if (!formData.phone.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Please enter your phone number",
+        title: t('common.error'),
+        description: t('auth.validationErrors.phoneRequired'),
         variant: "destructive"
       });
       return false;
@@ -90,8 +94,8 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
     const phoneRegex = /^[+]?[\d\s-()]{10,15}$/;
     if (!phoneRegex.test(formData.phone.trim())) {
       toast({
-        title: "Validation Error", 
-        description: "Please enter a valid phone number",
+        title: t('common.error'), 
+        description: t('auth.validationErrors.phoneInvalid'),
         variant: "destructive"
       });
       return false;
@@ -99,8 +103,8 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
 
     if (!formData.state) {
       toast({
-        title: "Validation Error",
-        description: "Please select your state",
+        title: t('common.error'),
+        description: t('auth.validationErrors.stateRequired'),
         variant: "destructive"
       });
       return false;
@@ -138,8 +142,8 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
       if (authError) {
         if (authError.message.includes('already registered')) {
           toast({
-            title: "User Already Exists",
-            description: "A user with this phone number already exists. Please use a different number.",
+            title: t('common.error'),
+            description: t('auth.errors.userExists'),
             variant: "destructive"
           });
           return;
@@ -167,8 +171,8 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
       }
 
       toast({
-        title: "Registration Successful",
-        description: "Your account has been created successfully!",
+        title: t('auth.success.registrationComplete'),
+        description: t('auth.success.registrationComplete'),
       });
 
       onAuthComplete(userData || {
@@ -182,8 +186,8 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
     } catch (error: any) {
       console.error('Error during registration:', error);
       toast({
-        title: "Registration Failed",
-        description: error.message || "An error occurred during registration. Please try again.",
+        title: t('common.error'),
+        description: error.message || t('auth.errors.registrationFailed'),
         variant: "destructive"
       });
     } finally {
@@ -195,7 +199,7 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
     return (
       <div className="farm-background flex items-center justify-center">
         <div className="cropdoc-card p-8">
-          <div className="text-center">Loading...</div>
+          <div className="text-center">{t('common.loading')}</div>
         </div>
       </div>
     );
@@ -214,8 +218,8 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
         <div className="cropdoc-card overflow-hidden">
           {/* Header */}
           <div className="bg-primary text-primary-foreground p-6 text-center">
-            <h1 className="text-2xl font-bold">Authentication</h1>
-            <p className="mt-2 opacity-90">Please provide your details to continue</p>
+            <h1 className="text-2xl font-bold">{t('auth.title')}</h1>
+            <p className="mt-2 opacity-90">{t('auth.subtitle')}</p>
           </div>
 
           {/* Form */}
@@ -224,12 +228,12 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
               {/* Name Field */}
               <div>
                 <Label htmlFor="name" className="block text-foreground font-medium mb-2">
-                  Full Name
+                  {t('auth.fullName')}
                 </Label>
                 <Input
                   id="name"
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder={t('auth.fullNamePlaceholder')}
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   className="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:border-primary"
@@ -240,11 +244,11 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
               {/* State Field */}
               <div>
                 <Label htmlFor="state" className="block text-foreground font-medium mb-2">
-                  State
+                  {t('auth.state')}
                 </Label>
                 <Select value={formData.state} onValueChange={(value) => handleInputChange('state', value)}>
                   <SelectTrigger className="w-full px-4 py-3 border border-input rounded-lg">
-                    <SelectValue placeholder="Select your state" />
+                    <SelectValue placeholder={t('auth.statePlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {states.map((state) => (
@@ -259,12 +263,12 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
               {/* Phone Field */}
               <div>
                 <Label htmlFor="phone" className="block text-foreground font-medium mb-2">
-                  Phone Number
+                  {t('auth.phoneNumber')}
                 </Label>
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="Enter your phone number"
+                  placeholder={t('auth.phoneNumberPlaceholder')}
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   className="w-full px-4 py-3 border border-input rounded-lg focus:outline-none focus:border-primary"
@@ -278,12 +282,12 @@ const AuthForm = ({ selectedLanguage, onAuthComplete }: AuthFormProps) => {
                 disabled={loading}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3 px-6 rounded-lg transition-all duration-200"
               >
-                {loading ? 'Creating Account...' : 'Create Account'}
+                {loading ? t('auth.creatingAccount') : t('auth.createAccount')}
               </Button>
             </form>
 
             <p className="text-center text-muted-foreground text-sm mt-6">
-              By continuing, you agree to our Terms of Service and Privacy Policy
+              {t('auth.termsText')}
             </p>
           </div>
         </div>
